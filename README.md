@@ -1,0 +1,1 @@
+# Common ViewModels for usage in Magento 2
