@@ -3,45 +3,48 @@ declare(strict_types=1);
 
 namespace Yireo\CommonViewModels\ViewModel;
 
-use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use RuntimeException;
 
+/**
+ * Class CurrentProduct
+ * @package Yireo\CommonViewModels\ViewModel
+ */
 class CurrentProduct implements ArgumentInterface
 {
-    /**
-     * @var ProductRepositoryInterface
-     */
-    private $productRepository;
-
     /**
      * @var RequestInterface
      */
     private $request;
 
     /**
+     * @var Product
+     */
+    private $productViewModel;
+
+    /**
      * CurrentProduct constructor.
-     * @param ProductRepositoryInterface $productRepository
      * @param RequestInterface $request
+     * @param Product $productViewModel
      */
     public function __construct(
-        ProductRepositoryInterface $productRepository,
-        RequestInterface $request
+        RequestInterface $request,
+        Product $productViewModel
     ) {
-        $this->productRepository = $productRepository;
         $this->request = $request;
+        $this->productViewModel = $productViewModel;
     }
 
     /**
-     * @return ProductInterface
      * @throws RuntimeException
+     * @throws NoSuchEntityException
      */
-    public function getProduct(): ProductInterface
+    public function initialize()
     {
         $request = $this->request;
+
         /** @var $request \Magento\Framework\App\Request\Http */
         if ($request->getControllerName() !== 'product') {
             throw new RuntimeException('Wrong page');
@@ -56,28 +59,19 @@ class CurrentProduct implements ArgumentInterface
             throw new RuntimeException('No product ID');
         }
 
-        try {
-            $product = $this->productRepository->getById($productId);
-        } catch(NoSuchEntityException $exception) {
-            throw new RuntimeException('Wrong product ID');
-        }
-
-        return $product;
+        $this->productViewModel->setProductById($productId);
     }
 
     /**
-     * @return string
+     * @param string $methodName
+     * @param array $methodArguments
      */
-    public function getSku(): string
+    public function __call(string $methodName, array $methodArguments = [])
     {
-        try {
-            $product = $this->getProduct();
-
-        } catch(RuntimeException $exception) {
-            return '<!-- ' .$exception->getMessage(). ' -->';
+        if (method_exists($this->productViewModel, $methodName)) {
+            return call_user_func([$this->productViewModel, $methodName], $methodArguments);
         }
 
-        $productSku = $product->getSku();
-        return $productSku;
+        throw new RuntimeException('Invalid method: ' . $methodName);
     }
 }
