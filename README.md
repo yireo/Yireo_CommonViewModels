@@ -7,6 +7,9 @@ composer require yireo/magento2-common-view-models
 bin/magento module:enable Yireo_CommonViewModels
 ```
 
+## Roadmap
+There is no roadmap. Feel free to open an **Issue** to request creation of a new ViewModel or enhancement of an existing ViewModel. Feel free to submit PRs. I'll treat it respectfully once I drink my morning coffee.
+
 ## Generic usage of ViewModels
 In Magento 2.2.1 or newer, create a XML layout instruction:
 ```xml
@@ -51,3 +54,16 @@ $viewModel->getSku();
 ```
 
 The `CurrentProduct` ViewModel extends the `Product` ViewModel through injection.
+
+## `Yireo\CommonViewModels\ViewModel\Products`
+Use existing filters:
+```php
+$viewModel->getProductsByName('%hoodie%');
+$viewModel->getProductsBySku('B01%');
+```
+or build your own:
+```php
+$searchCriteriaBuilder = $viewModel->getSearchCriteriaBuilder();
+$viewModel->getProducts($searchCriteriaBuilder->create());
+
+```
