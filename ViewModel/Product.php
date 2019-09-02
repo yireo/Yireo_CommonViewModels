@@ -69,7 +69,7 @@ class Product implements ArgumentInterface
      */
     public function getProduct(): ProductInterface
     {
-        if ($this->product instanceof ProductInterface) {
+        if (!$this->product instanceof ProductInterface) {
             throw new RuntimeException('No valid product set');
         }
 

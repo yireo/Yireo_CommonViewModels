@@ -2,10 +2,6 @@
 Gathering of common useful ViewModels for usage in the XML layout.
 
 ## Installation
-You'll need Magento 2.2+ for ViewModels and 2.2.1+ to drop the `class` attribute in an XML `block` definition as shown
-below.
-
-To install:
 ```bash
 composer require yireo/magento2-common-view-models
 bin/magento module:enable Yireo_CommonViewModels
