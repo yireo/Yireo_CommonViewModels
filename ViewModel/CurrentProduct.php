@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Yireo\CommonViewModels\ViewModel;
 
+use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
@@ -60,6 +61,15 @@ class CurrentProduct implements ArgumentInterface
         }
 
         $this->productViewModel->setProductById($productId);
+    }
+
+    /**
+     * @return ProductInterface
+     * @throws RuntimeException
+     */
+    public function getProduct(): ProductInterface
+    {
+        return $this->productViewModel->getProduct();
     }
 
     /**
