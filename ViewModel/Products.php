@@ -11,10 +11,10 @@ use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 
 /**
- * Class Product
+ * Class Products
  * @package Yireo\CommonViewModels\ViewModel
  */
-class Product implements ArgumentInterface
+class Products implements ArgumentInterface
 {
     /**
      * @var ProductRepositoryInterface

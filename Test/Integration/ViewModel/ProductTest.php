@@ -1,18 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace Yireo\CommonViewModels\Test\Functional;
+namespace Yireo\CommonViewModels\Test\Integration;
 
 use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\Framework\Component\ComponentRegistrar;
-use Magento\Framework\Module\ModuleList;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
 use Yireo\CommonViewModels\ViewModel\Product;
 
 /**
- * Class ModuleTest
+ * Class ProductTest
  * @package Yireo\CommonViewModels\Test\Integration
  */
 class ProductTest extends TestCase
