@@ -67,3 +67,9 @@ $searchCriteriaBuilder = $viewModel->getSearchCriteriaBuilder();
 $viewModel->getProducts($searchCriteriaBuilder->create());
 
 ```
+
+## `Yireo\CommonViewModels\ViewModel\FormKey`
+Usage:
+```php
+$viewModel->getToken();
+```
