@@ -5,7 +5,6 @@ namespace Yireo\CommonViewModels\ViewModel;
 
 use Magento\Framework\Data\Form\FormKey as FormKeyModel;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
-use Magento\Tests\NamingConvention\true\bool;
 
 /**
  * Class FormKey
