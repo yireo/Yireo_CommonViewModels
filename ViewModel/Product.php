@@ -7,8 +7,8 @@ use Exception;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
+use Magento\Catalog\Api\ProductRepositoryInterface;
 use RuntimeException;
-use Yireo\ExampleRewriteComposition\Api\ProductRepositoryInterface;
 
 /**
  * Class Product
