@@ -1,7 +1,7 @@
 {
   "name": "yireo/magento2-common-view-models",
   "type": "magento2-module",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "OSL-3.0",
   "description": "",
   "keywords": [
@@ -15,9 +15,9 @@
     }
   ],
   "require": {
-    "magento/module-catalog": "^102.0|^103.0",
-    "magento/framework": "^102.0",
-    "php": ">=7.0.0"
+    "magento/module-catalog": "^102.0|^103.0|^104.0",
+    "magento/framework": "^102.0|^103.0",
+    "php": ">=7.2.0"
   },
   "require-dev": {
     "phpunit/phpunit": "*",
