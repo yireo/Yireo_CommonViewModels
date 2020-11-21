@@ -42,7 +42,7 @@ class CurrentProduct implements ArgumentInterface
      * @throws RuntimeException
      * @throws NoSuchEntityException
      */
-    public function initialize()
+    public function initialize(): CurrentProduct
     {
         $request = $this->request;
 
@@ -61,6 +61,7 @@ class CurrentProduct implements ArgumentInterface
         }
 
         $this->productViewModel->setProductById($productId);
+        return $this;
     }
 
     /**
@@ -69,6 +70,7 @@ class CurrentProduct implements ArgumentInterface
      */
     public function getProduct(): ProductInterface
     {
+        $this->initialize();
         return $this->productViewModel->getProduct();
     }
 
