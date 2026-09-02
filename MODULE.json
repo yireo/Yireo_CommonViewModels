@@ -1,0 +1,7 @@
+{
+    "module_name": "Yireo_CommonViewModels",
+    "composer_name": "yireo/magento2-common-view-models",
+    "sequence": [
+        "Magento_Catalog"
+    ]
+}
