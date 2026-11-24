@@ -1,34 +1,43 @@
 <?php
 declare(strict_types=1);
 
-namespace Yireo\CommonViewModels\Test\Integration;
+namespace Yireo\CommonViewModels\Test\Integration\ViewModel;
 
-use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\Framework\ObjectManagerInterface;
+use Magento\Catalog\Api\Data\ProductInterface;
+use Magento\Catalog\Test\Fixture\Product as ProductFixture;
+use Magento\TestFramework\Fixture\DataFixture;
+use Magento\TestFramework\Fixture\DataFixtureStorageManager;
 use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
 use Yireo\CommonViewModels\ViewModel\Product;
 
-/**
- * Class ProductTest
- * @package Yireo\CommonViewModels\Test\Integration
- */
 class ProductTest extends TestCase
 {
     /**
-     * @magentoDataFixture Magento/Catalog/_files/product_simple.php
+     * @return void
      */
-    public function testSetProduct()
+    #[DataFixture(ProductFixture::class, as: 'product')]
+    public function testSetProduct(): void
     {
-        $productId = 1;
-        /** @var ProductRepositoryInterface $productRepository */
-        $productRepository = $this->getObjectManager()->get(ProductRepositoryInterface::class);
-        $product = $productRepository->getById($productId);
-        $this->assertEquals($productId, $product->getId());
+        /** @var ProductInterface $product */
+        $product = DataFixtureStorageManager::getStorage()->get('product');
 
         $viewModel = $this->getViewModel();
         $viewModel->setProduct($product);
-        $this->assertEquals($productId, $viewModel->getProduct()->getId());
+        $this->assertEquals($product->getId(), $viewModel->getProduct()->getId());
+        $this->assertEquals($product->getSku(), $viewModel->getSku());
+    }
+
+    /**
+     * @return void
+     */
+    public function testIfMissingProductReturnsNoMarkup(): void
+    {
+        $viewModel = $this->getViewModel();
+        $this->assertNull($viewModel->getProductData('name'));
+        $this->assertSame('', $viewModel->getName());
+        $this->assertSame('', $viewModel->getSku());
+        $this->assertSame('', $viewModel->getDescription());
     }
 
     /**
@@ -36,14 +45,6 @@ class ProductTest extends TestCase
      */
     private function getViewModel(): Product
     {
-        return $this->getObjectManager()->get(Product::class);
-    }
-
-    /**
-     * @return ObjectManagerInterface
-     */
-    private function getObjectManager(): ObjectManagerInterface
-    {
-        return Bootstrap::getObjectManager();
+        return Bootstrap::getObjectManager()->create(Product::class);
     }
 }
