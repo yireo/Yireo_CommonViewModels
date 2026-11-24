@@ -3,6 +3,7 @@
     <module name="Yireo_CommonViewModels">
         <sequence>
             <module name="Magento_Catalog"/>
+            <module name="Magento_Store"/>
         </sequence>
     </module>
 </config>

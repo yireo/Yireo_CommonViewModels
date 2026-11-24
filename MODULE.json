@@ -2,7 +2,8 @@
     "module_name": "Yireo_CommonViewModels",
     "composer_name": "yireo/magento2-common-view-models",
     "sequence": [
-        "Magento_Catalog"
+        "Magento_Catalog",
+        "Magento_Store"
     ],
     "phpcs_severity": "8",
     "phpstan_level": "1"
