@@ -9,37 +9,23 @@ use Magento\Catalog\Model\Product;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
+use Magento\Store\Model\StoreManagerInterface;
+use RuntimeException;
 
 class CurrentCategory implements ArgumentInterface
 {
     /**
-     * @var RequestInterface
-     */
-    private $request;
-
-    /**
-     * @var CategoryRepositoryInterface
-     */
-    private $categoryRepository;
-
-    /**
-     * @var CurrentProduct
-     */
-    private $currentProduct;
-
-    /**
-     * CurrentCategory constructor.
      * @param RequestInterface $request
      * @param CategoryRepositoryInterface $categoryRepository
+     * @param CurrentProduct $currentProduct
+     * @param StoreManagerInterface $storeManager
      */
     public function __construct(
-        RequestInterface $request,
-        CategoryRepositoryInterface $categoryRepository,
-        CurrentProduct $currentProduct
+        private readonly RequestInterface $request,
+        private readonly CategoryRepositoryInterface $categoryRepository,
+        private readonly CurrentProduct $currentProduct,
+        private readonly StoreManagerInterface $storeManager
     ) {
-        $this->request = $request;
-        $this->categoryRepository = $categoryRepository;
-        $this->currentProduct = $currentProduct;
     }
 
     /**
@@ -48,13 +34,13 @@ class CurrentCategory implements ArgumentInterface
     public function getCategoryName(): string
     {
         try {
-            return $this->getCategoryFromRequest()->getName();
+            return (string)$this->getCategoryFromRequest()->getName();
         } catch (NoSuchEntityException $e) {
         }
 
         try {
-            return $this->getCategoryFromCurrentProduct()->getName();
-        } catch (NoSuchEntityException $e) {
+            return (string)$this->getCategoryFromCurrentProduct()->getName();
+        } catch (NoSuchEntityException | RuntimeException $e) {
         }
 
         return 'Unknown category';
@@ -66,13 +52,13 @@ class CurrentCategory implements ArgumentInterface
      */
     private function getCategoryFromRequest(): CategoryInterface
     {
-        $categoryId = (int)$this->request->getParam('category');
-        return $this->categoryRepository->get($categoryId);
+        return $this->loadValidCategory((int)$this->request->getParam('category'));
     }
 
     /**
      * @return CategoryInterface
      * @throws NoSuchEntityException
+     * @throws RuntimeException
      */
     private function getCategoryFromCurrentProduct(): CategoryInterface
     {
@@ -80,15 +66,39 @@ class CurrentCategory implements ArgumentInterface
         $product = $this->currentProduct->getProduct();
 
         if ($product->getCategoryId()) {
-            return $this->categoryRepository->get($product->getCategoryId());
+            return $this->loadValidCategory((int)$product->getCategoryId());
         }
 
-        $categoryIds = $product->getCategoryIds();
+        $categoryIds = (array)$product->getCategoryIds();
         if (count($categoryIds) === 1) {
-            $categoryId = array_shift($product->getCategoryIds());
-            return $this->categoryRepository->get($categoryId);
+            return $this->loadValidCategory((int)reset($categoryIds));
         }
 
         throw new NoSuchEntityException(__('Dont know which category you want'));
+    }
+
+    /**
+     * @param int $categoryId
+     * @return CategoryInterface
+     * @throws NoSuchEntityException
+     */
+    private function loadValidCategory(int $categoryId): CategoryInterface
+    {
+        if ($categoryId < 1) {
+            throw new NoSuchEntityException(__('No category ID'));
+        }
+
+        $store = $this->storeManager->getStore();
+        $category = $this->categoryRepository->get($categoryId, (int)$store->getId());
+        if (!$category->getIsActive()) {
+            throw new NoSuchEntityException(__('Category is not active'));
+        }
+
+        $rootCategoryId = (int)$this->storeManager->getGroup($store->getStoreGroupId())->getRootCategoryId();
+        if (!str_contains('/' . $category->getPath() . '/', '/' . $rootCategoryId . '/')) {
+            throw new NoSuchEntityException(__('Category does not belong to the current store'));
+        }
+
+        return $category;
     }
 }
