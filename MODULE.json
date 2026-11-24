@@ -3,5 +3,7 @@
     "composer_name": "yireo/magento2-common-view-models",
     "sequence": [
         "Magento_Catalog"
-    ]
+    ],
+    "phpcs_severity": "8",
+    "phpstan_level": "1"
 }
