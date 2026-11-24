@@ -9,6 +9,7 @@ use Magento\Catalog\Model\Product\Visibility;
 use Magento\Catalog\Test\Fixture\Product as ProductFixture;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Store\Test\Fixture\Website as WebsiteFixture;
+use Magento\TestFramework\Fixture\AppArea;
 use Magento\TestFramework\Fixture\DataFixture;
 use Magento\TestFramework\Fixture\DataFixtureStorageManager;
 use Magento\TestFramework\Request;
@@ -16,6 +17,7 @@ use Magento\TestFramework\TestCase\AbstractController as AbstractControllerTestC
 use RuntimeException;
 use Yireo\CommonViewModels\ViewModel\CurrentProduct;
 
+#[AppArea('frontend')]
 class CurrentProductTest extends AbstractControllerTestCase
 {
     /**
