@@ -8,11 +8,12 @@ use Magento\Framework\View\Element\Block\ArgumentInterface;
 
 class ViewModelFactory
 {
-    private ObjectManagerInterface $objectManager;
-
-    public function __construct(ObjectManagerInterface $objectManager)
-    {
-        $this->objectManager = $objectManager;
+    /**
+     * @param ObjectManagerInterface $objectManager
+     */
+    public function __construct(
+        private readonly ObjectManagerInterface $objectManager
+    ) {
     }
 
     /**
@@ -22,15 +23,12 @@ class ViewModelFactory
      */
     public function create(string $className): ArgumentInterface
     {
+        if (!class_exists($className) || !is_a($className, ArgumentInterface::class, true)) {
+            throw new InvalidArgumentException('Class is not a valid ViewModel');
+        }
+
+        /** @var ArgumentInterface $viewModel */
         $viewModel = $this->objectManager->create($className);
-        if (empty($viewModel) || !is_object($viewModel)) {
-            throw new InvalidArgumentException('Class "' . $className . '" not found');
-        }
-
-        if (!$viewModel instanceof ArgumentInterface) {
-            throw new InvalidArgumentException('Class "' . $className . '" must implement ' . ArgumentInterface::class);
-        }
-
         return $viewModel;
     }
 }
